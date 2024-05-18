@@ -2,9 +2,10 @@ import { useState, useEffect } from "react"
 
 const Square = ({ chara, col }) => {
     const [c, setC] = useState(col);
+
     useEffect(() => {
         console.log('colore aggiornato');
-        setC(col);
+        setC(co => col);
     }, [col])
 
     return (
@@ -20,10 +21,9 @@ const Row = ({ k, row, word, color }) => {
 
     // per memorizzare nella singola riga una parola inserita dall'utente, per fare in modo che non venga sovrascritta con la successiva
     useEffect(() => {
-        async function setValues() {
-            await setW(word);
-            await setC(color);
-            return;
+        function setValues() {
+            setW(w => word);
+            setC(co => color);
         }
         if(row == k) {
             setValues();
@@ -48,6 +48,7 @@ const Row = ({ k, row, word, color }) => {
 }
 
 const Table = () => {
+    const PAROLA = "AMORE";
     const [word, setWord] = useState([]);
     const [r, setR] = useState(0);   // riga di inserimento attuale
     const [colors, setColors] = useState(['', '', '', '', '']);
@@ -62,25 +63,36 @@ const Table = () => {
         };
     }, [word]);
 
-    async function writingHandler(e) {
+    function changeColor(w) {
+        const insWord = w;
+        const colo = ['', '', '', '', ''];
+        const charOut = [];  // tiene traccia delle lettere presenti
+        insWord.forEach((ch, ind) => {
+            if (ch == PAROLA[ind] && !(ch in charOut)) {
+                colors[ind] = 'green';
+                charOut.push(ch);
+            }
+            else
+                if (PAROLA.includes(ch) && !(ch in charOut)) {
+                    colors[ind] = 'yellow';
+                    charOut.push(ch);
+                }
+                else colors[ind] = '';
+        });
+
+        setColors(() => colo);
+    }
+
+    function writingHandler(e) {
         if(alphabet.includes(e.key) && word.length < 5) {
             setWord((prevWord) => [...prevWord, e.key.toUpperCase()]);
         }
 
         // avanza di riga e resetta la il buffer contenente la parola se la parola inserita è completa e si preme enter
         if(e.key == 'Enter' && word.length == 5) {
-            // invio parola al backend
-            const res = await fetch('http://localhost:4000/checkWord', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(word),
-            })
-            .then((r) => r.text().then((resInJSON) => setColors(JSON.parse(resInJSON))))
-            .then(setR(r + 1))
-            .then(setWord([]));
-            
+            changeColor(word);
+            setWord([]);
+            setR(r => r + 1);
         }
 
         // cancella l'ultima lettera se il tasto premuto è backspace
@@ -100,6 +112,7 @@ const Table = () => {
         {rowN: 3},
         {rowN: 4},
         {rowN: 5},
+        {rowN: 6}
     ]
 
     return (
