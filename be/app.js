@@ -16,17 +16,20 @@ app.post('/login', (req, res) => {
   let db = new sqlite3.Database('./db/wordle.db');
 
   dati = req.body;
+  console.log(dati)
   let sql = 'select * from UTENTE where username=?'
 
   db.get(sql, [dati.username], (err, row) => {
     if (row === undefined) {
-      console.log("Non esiste nessun riferimento nel database")
+      console.log("Non esiste nessun riferimento nel database, creazione utente...")
+      db.run('insert into UTENTE (username, password) values (?, ?)', [dati.username, dati.password])
+      res.send(true)
     }
     else if (row.password != dati.password) {
-        console.log("Password sbagliata")
+        res.send(false)
       }
     else {
-      console.log("Esisti")
+      res.send(true)
     }
   })
   
