@@ -65,7 +65,6 @@ const Table = () => {
 
     function changeColor(w) {
         const insWord = w;
-        const colo = ['', '', '', '', ''];
         const charOut = [];  // tiene traccia delle lettere presenti
         insWord.forEach((ch, ind) => {
             if (ch == PAROLA[ind] && !(ch in charOut)) {
@@ -80,7 +79,7 @@ const Table = () => {
                 else colors[ind] = '';
         });
 
-        setColors(() => colo);
+        setColors(() => ['', '', '', '', '']);  // prossima riga
     }
 
     function writingHandler(e) {
@@ -112,7 +111,6 @@ const Table = () => {
         {rowN: 3},
         {rowN: 4},
         {rowN: 5},
-        {rowN: 6}
     ]
 
     return (
