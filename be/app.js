@@ -16,7 +16,6 @@ app.post('/login', (req, res) => {
   let db = new sqlite3.Database('./db/wordle.db');
 
   dati = req.body;
-  console.log(dati)
   let sql = 'select * from UTENTE where username=?'
 
   db.get(sql, [dati.username], (err, row) => {
@@ -32,9 +31,19 @@ app.post('/login', (req, res) => {
       res.send(true)
     }
   })
-  
+
   db.close();
 })
+
+app.post('/win', (req, res) => {
+  let db = new sqlite3.Database('./db/wordle.db');
+  dati = req.body;
+  
+  db.run('insert into PARTITA (righe, dataP, utente) values (?, ?, ?)', [dati.righe, dati.dataP, dati.username]);
+
+  db.close()
+})
+
 
 app.listen(
   PORT, 

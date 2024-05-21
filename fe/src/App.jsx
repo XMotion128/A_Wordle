@@ -33,6 +33,7 @@ const Bar = () => {
         <div className="flex">
           <FaCircleUser className="text-white m-4 w-7 h-7" />
           <span className="self-center text-white">{user}</span>
+          {/* crea tasto logout */}
         </div>
       ) : (
         <Link className="w-min p-3" to="/login">
@@ -107,6 +108,10 @@ const Login = () => {
         </div>
 
         <input type="submit" value={"Accedi/Registrati"} className='cursor-pointer bg-white rounded-2xl h-8'/>
+
+        <p className='pt-4 text-red-500'>Attenzione, se non si inserisce un username esistente</p>
+        <p className='text-red-500'>il sistema creerà automaticamente un nuovo utente.</p>
+        <p className='text-red-500 self-center'>Controlla bene prima di accedere.</p>
       </form>
     </div>
   )
